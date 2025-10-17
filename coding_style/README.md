@@ -43,3 +43,75 @@
 
 当某段逻辑被多处（含内部）复用且你希望将来改动不破坏外部行为时，把它下沉为私有核心是更保险的做法。
 
+短版约定，一页就够用——挑一套用到底就行：
+
+## 常见包装符
+
+* **命令/软件/子命令**：用反引号
+  例：`bwa-meme`、`samtools sort`、`bcftools call`
+
+* **选项/旗标**：反引号
+  例：`-t`、`--threads=16`、`--output`
+
+* **文件/路径**
+
+  * 文档里：反引号 → `~/data/Sample_1.bam`
+  * 日志里：**双引号**，避免空格歧义 → `"/home/user/My Data/file.fq.gz"`
+
+* **占位符（用户需替换）**：尖括号 + 大写蛇形
+  例：`<SAMPLE_ID>`、`<REF_FA>`、`<N_THREADS>`
+
+* **可选部分**：方括号
+  例：`samtools view [OPTIONS] <IN.bam>`
+
+* **必选分组**：花括号（可选）
+  例：`{R1,R2}`、`{bam,cram}`
+
+* **互斥/二选一**：竖线 `|`
+  例：`--output <VCF|BCF>`
+
+* **可重复**：省略号 `...`
+  例：`bcftools concat <FILE1> <FILE2> ...`
+
+* **环境变量**：`$VAR` 或 `${VAR}`
+  例：`$PATH`、`${HOME}`
+
+* **正则**：反引号或斜杠包裹
+  例：`` `^SID\d+_R[12]\.(fastq|fq)\.gz$` ``
+
+* **键盘键**：`Ctrl+C`、`Ctrl+D`
+
+* **UI 元素/按钮**：方括号或加粗
+  例：`[OK]`、**Run**
+
+## man 风格（参考）
+
+* `[]` 可选、`...` 可重复、`|` 互斥、*斜体* 表示占位（在 Markdown 里用尖括号代替斜体占位即可）。
+
+## 一条统一的风格示例
+
+文档说明：
+
+```
+Usage:
+  bcftools mpileup [OPTIONS] -f <REF_FA> <IN.bam> | bcftools call -mv -Oz -o <OUT.vcf.gz>
+
+Options:
+  --threads <N_THREADS>   Number of threads
+```
+
+日志输出：
+
+```
+INFO  tool="bcftools" step="mpileup" ref="<REF_FA>" in="Sample_1.bam" threads=16
+INFO  tool="bcftools" step="call" out="Sample_1.vcf.gz" opts="--threads=16 -mv -Oz"
+```
+
+## 小贴士
+
+* 文档里**一律反引号**标记“字面量”（命令、选项、文件名）。
+* 需要用户替换的内容**一律尖括号**。
+* 日志里给路径加**双引号**，防空格/特殊字符踩坑。
+* 别混用多种占位符风格；团队内定一套即可。
+
+
