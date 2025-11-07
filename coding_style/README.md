@@ -48,7 +48,7 @@
 ## 常见包装符
 
 * **命令/软件/子命令**：用反引号
-  例：`bwa-meme`、`samtools sort`、`bcftools call`
+  例：\`bwa-meme`、\`samtools sort`、\`bcftools call`
 
 * **选项/旗标**：反引号
   例：`-t`、`--threads=16`、`--output`
